@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<?import javafx.scene.image.ImageView?>
+
+
+<?import javafx.scene.image.ImageView?>
+
+
+<VBox xmlns:fx="http://javafx.com/fxml"  spacing="10" fx:controller="uniquindio.proyectosoftware.controllers.ProductoView" prefHeight="410.0" prefWidth="550.0" >
+    <ScrollPane VBox.vgrow="ALWAYS">
+        <VBox fx:id="productosVBox" alignment="BASELINE_CENTER" spacing="10">
+            <!-- Los productos se agregarán aquí dinámicamente desde el controlador -->
+        </VBox>
+    </ScrollPane>
+    <Button fx:id="btnSalir" layoutX="16.0" alignment="BASELINE_LEFT" layoutY="486.0" mnemonicParsing="false" onAction="#salir" style="-fx-background-color: #1877F2; -fx-text-fill: white;" text="Salir" />
+</VBox>
+
+
+
+
