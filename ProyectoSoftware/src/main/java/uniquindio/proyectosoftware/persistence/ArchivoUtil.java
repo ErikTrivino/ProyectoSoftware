@@ -20,14 +20,16 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  * @author Admin
  *
  */
-public  class ArchivoUtil {
-
+public  class ArchivoUtil
+{
 	static String fechaSistema = "";
 
-	public static void copiarArchivoBinario(String urlArchivo, String urlDestino){
+	public static void copiarArchivoBinario(String urlArchivo, String urlDestino)
+	{
 
 		try (FileInputStream fis = new FileInputStream(urlArchivo);
-			 FileOutputStream fos = new FileOutputStream(urlDestino, false)) {
+			 FileOutputStream fos = new FileOutputStream(urlDestino, false))
+		{
 
 			byte[] buffer = new byte[1024]; // Puedes ajustar el tama�o del buffer a tu necesidad
 			int bytesRead;
@@ -35,19 +37,25 @@ public  class ArchivoUtil {
 				fos.write(buffer, 0, bytesRead);
 			}
 
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 	}
-	public static void copiarArchivoRespaldo(String urlArchivo, String urlDestino){
+	public static void copiarArchivoRespaldo(String urlArchivo, String urlDestino)
+	{
 		File archivo = new File(urlArchivo);
 		File archivoRespaldo = new File(urlDestino);
 
 
-		try{
+		try
+		{
 			Files.copy(archivo.toPath(), archivoRespaldo.toPath(),REPLACE_EXISTING);
 
-		}catch (Exception e){
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 
@@ -57,7 +65,8 @@ public  class ArchivoUtil {
 	 * @param ruta es la ruta o path donde esta ubicado el archivo
 	 * @throws IOException 
 	 */
-	public static void guardarArchivo(String ruta,String contenido, Boolean flagAnexarContenido) throws IOException {
+	public static void guardarArchivo(String ruta,String contenido, Boolean flagAnexarContenido) throws IOException
+	{
 		
 		FileWriter fw = new FileWriter(ruta,flagAnexarContenido);
 		BufferedWriter bfw = new BufferedWriter(fw); 
@@ -73,8 +82,8 @@ public  class ArchivoUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static ArrayList<String> leerArchivo(String ruta) throws IOException {
-
+	public static ArrayList<String> leerArchivo(String ruta) throws IOException
+	{
 		ArrayList<String>  contenido = new ArrayList<String>();
 		FileReader fr=new FileReader(ruta);
 		BufferedReader bfr=new BufferedReader(fr);

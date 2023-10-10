@@ -5,7 +5,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-public class HiloCorreo extends Thread{
+public class HiloCorreo extends Thread
+{
     String correoDestinatario;
     String contendido;
     String contraseniaTemp;
@@ -29,7 +30,8 @@ public class HiloCorreo extends Thread{
         this.contraseniaTemp = "";
     }
 
-    private void mandarCorreo(){
+    private void mandarCorreo()
+    {
         final String username = "erikpablot28@gmail.com"; // Tu dirección de correo
         final String password = "mqbk kflx ucen jeqv"; // Tu contraseña
 
@@ -46,15 +48,20 @@ public class HiloCorreo extends Thread{
                     }
                 });
 
-        try {
+        try
+        {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(correoDestinatario)); // Destinatario
+
             message.setSubject("Correo notificacion pasteleria");
-            if(!contraseniaTemp.equals("")){
+            if(!contraseniaTemp.equals(""))
+            {
                 message.setText(contendido+" "+contraseniaTemp);
-            }else {
+            }
+            else
+            {
                 message.setText(contendido);
             }
 
@@ -64,7 +71,9 @@ public class HiloCorreo extends Thread{
 
             System.out.println("Correo enviado exitosamente.");
 
-        } catch (MessagingException e) {
+        }
+        catch (MessagingException e)
+        {
             e.printStackTrace();
             System.err.println("Error al enviar el correo: " + e.getMessage());
         }
