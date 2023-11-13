@@ -13,7 +13,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import uniquindio.proyectosoftware.hilos.HiloCorreo;
 import uniquindio.proyectosoftware.hilos.HiloTomarFoto;
+import uniquindio.proyectosoftware.modelo.Cliente;
 import uniquindio.proyectosoftware.modelo.Empleado;
 import uniquindio.proyectosoftware.modelo.Usuario;
 
@@ -63,12 +65,65 @@ public class RegistroView {
         }
         // Si llegamos aquí, todos los datos son válidos
         // Puedes realizar el registro de la cuenta aquí
-        Empleado empleado = new Empleado(cedula, nombre, telefono, correo, new Usuario(correo, contrasena),imagenUrl, "Minimo", "10/03/2015");
+        Cliente empleado = new Cliente(cedula, nombre, telefono, correo, new Usuario(correo, contrasena),imagenUrl, "Minimo", "10/03/2015");
 
         modelFactoryController.agregarEmpleado(empleado);
         limpiarCampos();
+        String htmlBienvenida = "<html>\n" +
+                "<head>\n" +
+                "    <title>Bienvenido a la App</title>\n" +
+                "    <style>\n" +
+                "        body {\n" +
+                "            font-family: 'Arial', sans-serif;\n" +
+                "            background-color: #f4f4f4;\n" +
+                "            color: #333;\n" +
+                "            margin: 20px;\n" +
+                "        }\n" +
+                "        h1 {\n" +
+                "            color: #007BFF;\n" +
+                "        }\n" +
+                "        p {\n" +
+                "            line-height: 1.6;\n" +
+                "        }\n" +
+                "        ul {\n" +
+                "            list-style-type: none;\n" +
+                "            padding: 0;\n" +
+                "        }\n" +
+                "        li {\n" +
+                "            margin-bottom: 10px;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <div style='background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>\n" +
+                "        <h1>Bienvenido, " + nombre + "!</h1>\n" +
+                "        <p>Gracias por registrarte en nuestra aplicación.</p>\n" +
+                "        <p>Aquí están los detalles de tu cuenta:</p>\n" +
+                "        <ul>\n" +
+                "            <li>Cédula: " + cedula + "</li>\n" +
+                "            <li>Nombre: " + nombre + "</li>\n" +
+                "            <li>Teléfono: " + telefono + "</li>\n" +
+                "            <li>Correo Electrónico: " + correo + "</li>\n" +
+                "        </ul>\n" +
+                "        <p>¡Esperamos que disfrutes de nuestra aplicación!</p>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "</html>";
+
+        HiloCorreo hiloCorreo = new HiloCorreo(correo, htmlBienvenida);
+        hiloCorreo.start();
+        mostrarMensaje("Registro completado", "Registro completado", "Bienvenida a la pasteleria Tentacion", Alert.AlertType.INFORMATION);
 
     }
+    private void mostrarMensaje(String titulo, String head, String content, Alert.AlertType tipo) {
+        Alert alerta = new Alert(null);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(head);
+        alerta.setContentText(content);
+        alerta.setAlertType(tipo);
+        alerta.show();
+    }
+
     public void limpiarCampos(){
         cedulaTextField.setText("");
         nombreTextField.setText("");

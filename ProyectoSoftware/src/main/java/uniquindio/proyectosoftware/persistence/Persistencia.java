@@ -8,10 +8,10 @@ import uniquindio.proyectosoftware.modelo.Pasteleria;
 public class Persistencia {
 
 
-	public static final String RUTA_ARCHIVO_MARKETPLACE_XML = "C://td//Hostal.xml";
-	public static final String RUTA_ARCHIVO_LOG = "C://td//persistencia//log//Hostal_Log.txt";
+	public static final String RUTA_ARCHIVO_MARKETPLACE_XML = "C://td//pasteleria.xml";
+	public static final String RUTA_ARCHIVO_LOG = "C://td//persistencia//log//pasteleria_Log.txt";
 
-	public static final String RUTA_ARCHIVO_MARKETPLACE_XML_RESPALDO = "C://td//HostalRespaldo.xml";
+	public static final String RUTA_ARCHIVO_MARKETPLACE_XML_RESPALDO = "C://td//pasteleriaRespaldo.xml";
 
 
 

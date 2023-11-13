@@ -1,7 +1,5 @@
 package uniquindio.proyectosoftware.modelo;
 
-import javafx.scene.control.Alert;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,12 +11,22 @@ public class Pasteleria implements Serializable {
     private ArrayList<Cliente> listaClientes;
     private ArrayList<Producto> listaProductos;
     private ArrayList<Pedido> listaPedidos;
-
+    private Empleado admin;
     public Pasteleria() {
         listaClientes = new ArrayList<>();
         listaProductos = new ArrayList<>();
         listaPedidos = new ArrayList<>();
         listaEmpleados= new ArrayList<>();
+        admin = new Empleado("1111", "Erik", "312543", "erikpablot@gmail.com", new Usuario("erikpablot@gmail.com", "2222"), "", "2000", "15/10/10");
+
+    }
+
+    public Empleado getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Empleado admin) {
+        this.admin = admin;
     }
 
     public ArrayList<Empleado> getListaEmpleados() {

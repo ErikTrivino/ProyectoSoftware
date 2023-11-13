@@ -13,6 +13,8 @@ public class Pedido implements Serializable {
     private double subTotal;
     private Empleado empleado;
     private Cliente cliente;
+    private String tipoPago;
+    private String direccion;
     private ArrayList<DetallePedido> detallePedido;
 
     public Pedido() {
@@ -26,6 +28,22 @@ public class Pedido implements Serializable {
         this.empleado = empleado;
         this.cliente = cliente;
         detallePedido = new ArrayList<>();
+    }
+
+    public String getTipoPago() {
+        return tipoPago;
+    }
+
+    public void setTipoPago(String tipoPago) {
+        this.tipoPago = tipoPago;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public String getNit() {

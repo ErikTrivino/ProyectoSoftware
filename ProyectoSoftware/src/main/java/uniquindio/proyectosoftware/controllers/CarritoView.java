@@ -10,33 +10,35 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import uniquindio.proyectosoftware.modelo.Producto;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import uniquindio.proyectosoftware.modelo.Producto;
-
-public class ProductoView {
+public class CarritoView {
     public TextField txtBuscarProducto;
+    public Text txtValorCarrito;
+    public Text txtSubtotalProductos;
     ModelFactoryController modelFactoryController = ModelFactoryController.getInstance();
-
-
     @FXML
     private VBox productosVBox;
-
     public void initialize() {
         // Aquí puedes configurar tus productos usando una lista de productos
-        List<Producto> listaProductos = modelFactoryController.obtenerListaDeProductos();
-
+        List<Producto> listaProductos = modelFactoryController.obtenerListaProductosCarrito();
 
         for (Producto producto : listaProductos) {
             GridPane productoHBox = crearCuadroDeProducto(producto);
             productosVBox.getChildren().add(productoHBox);
         }
+        txtValorCarrito.setText(String.valueOf(modelFactoryController.generarValorProdcutosCarrito()));
 
 
     }
@@ -52,17 +54,16 @@ public class ProductoView {
         Label productName = new Label(producto.getNombre());
         Label productPrice = new Label("$" + producto.getPrecio());
         Button btndetalleProducto = new Button("Ver detalle de producto");
-        Button btnAgregarProductoCarrito = new Button("Agregar producto carrito");
+        Button btnAgregarProductoCarrito = new Button("Eliminar producto carrito");
 
-        btnAgregarProductoCarrito.setOnAction(event -> modelFactoryController.agregarProductoCarrito(producto));
+        btnAgregarProductoCarrito.setOnAction(event -> modelFactoryController.eliminarProductoCarrito(producto));
         btndetalleProducto.setOnAction(event -> verDetalleProducto(producto));
 
         // Agregar elementos al GridPane
         cuadroProducto.add(imagenProducto, 0, 0); // Columna 0, Fila 0
         cuadroProducto.add(productName, 1, 0);     // Columna 1, Fila 0
         cuadroProducto.add(productPrice, 2, 0);    // Columna 2, Fila 0
-        cuadroProducto.add(btnAgregarProductoCarrito, 3, 0); // Columna 3, Fila 0
-        cuadroProducto.add(btndetalleProducto, 4, 0); // Columna 3, Fila 0
+        cuadroProducto.add(btndetalleProducto, 3, 0); // Columna 3, Fila 0
 
         // Configurar la distribución de columnas en el GridPane
         ColumnConstraints column1 = new ColumnConstraints();
@@ -75,11 +76,9 @@ public class ProductoView {
         column3.setPercentWidth(20); // Ajusta el ancho de la columna 3
 
         ColumnConstraints column4 = new ColumnConstraints();
-        column4.setPercentWidth(15); // Ajusta el ancho de la columna 4
-        ColumnConstraints column5 = new ColumnConstraints();
-        column4.setPercentWidth(15); // Ajusta el ancho de la columna 4
+        column4.setPercentWidth(30); // Ajusta el ancho de la columna 4
 
-        cuadroProducto.getColumnConstraints().addAll(column1, column2, column3, column4, column5);
+        cuadroProducto.getColumnConstraints().addAll(column1, column2, column3, column4);
 
         // Estilo para el GridPane
         cuadroProducto.setStyle("-fx-border-color: #CCCCCC; -fx-border-width: 1px; -fx-padding: 10px;");
@@ -108,7 +107,7 @@ public class ProductoView {
         Label descripcionLabel = new Label("Descripción: " + producto.getDescripcion());
         Label porcionesLabel = new Label("Porciones: " + producto.getPorciones());
         Button botonComprar = new Button("Comprar");
-       botonComprar.setOnAction(event -> comprarProducto(producto));
+        botonComprar.setOnAction(event -> comprarProducto(producto));
 
         // Agregar las etiquetas al VBox
         vbox.getChildren().addAll(idLabel, nombreLabel, precioLabel, descripcionLabel, porcionesLabel, botonComprar);
@@ -138,16 +137,11 @@ public class ProductoView {
         VBox vbox = new VBox(10); // Espacio de 10 píxeles entre los elementos
         vbox.setPadding(new javafx.geometry.Insets(10));
 
-        ComboBox<String> comboBoxTipoPago = new ComboBox<>();
-        comboBoxTipoPago.getItems().addAll("Efectivo", "Tarjeta");
-        comboBoxTipoPago.setPromptText("Seleccione Tipo de Pago");
         // Crear etiquetas y campos de texto
         Label direccionLabel = new Label("Dirección de Envío:");
         TextField direccionTextField = new TextField();
-        Label cedulaClietne = new Label("Cedula del cliente:");
+        Label cedulaClietne = new Label("Ingrese la cedula del cliente:");
         TextField cedulaClienteTxt = new TextField();
-        cedulaClienteTxt.setEditable(false);
-        cedulaClienteTxt.setText(modelFactoryController.getClienteActual().getCedula());
 
         Label precioLabel = new Label("Precio del Producto: $" + producto.getPrecio());
 
@@ -157,19 +151,19 @@ public class ProductoView {
             // Aquí puedes realizar la lógica de confirmación de compra
             String direccion = direccionTextField.getText();
             String cedulaCliente = cedulaClienteTxt.getText();
-            modelFactoryController.mandarCorreoNotificacionCliente(cedulaCliente, direccion,producto, comboBoxTipoPago.getValue());
+            modelFactoryController.mandarCorreoNotificacionCliente(cedulaCliente, direccion,producto,"Efectivo");
 
             // Realiza las acciones necesarias, como enviar la dirección y el producto para el procesamiento
-           // System.out.println("Compra confirmada: Producto=" + producto.getNombre() + ", Dirección=" + direccion);
+            // System.out.println("Compra confirmada: Producto=" + producto.getNombre() + ", Dirección=" + direccion);
             mostrarMensaje("Confirmacion compra", "Confirmar Compra","Compra confirmada: Producto=" + producto.getNombre() + ", Dirección=" + direccion, Alert.AlertType.INFORMATION );
             // Cierra la ventana emergente
             direccionTextField.setText("");
             cedulaClienteTxt.setText("");
-        ventanaEmergente.close();
+            ventanaEmergente.close();
         });
 
         // Agregar elementos al VBox
-        vbox.getChildren().addAll(comboBoxTipoPago,direccionLabel, direccionTextField, precioLabel,cedulaClietne, cedulaClienteTxt, confirmarButton);
+        vbox.getChildren().addAll(direccionLabel, direccionTextField, precioLabel,cedulaClietne, cedulaClienteTxt, confirmarButton);
 
         // Crear una ventana emergente de tipo Alert con contenido personalizado
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -191,7 +185,7 @@ public class ProductoView {
     }
     public void mostrarPestaniaPrincipal(ActionEvent event){
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/uniquindio/proyectosoftware/loginView.fxml"));
+        loader.setLocation(getClass().getResource("/uniquindio/proyectosoftware/productoView.fxml"));
 
 
         Parent root = null;
@@ -214,44 +208,49 @@ public class ProductoView {
         alerta.show();
     }
 
-    public void buscarProductos(ActionEvent event) {
-        String txtBuscar = txtBuscarProducto.getText();
-        if(txtBuscar!= null){
-            productosVBox.getChildren().clear();
-            ArrayList<Producto> productos = modelFactoryController.obtenerListaDeProductosByBuscador(txtBuscar);
-            for (Producto producto : productos) {
-                GridPane productoHBox = crearCuadroDeProducto(producto);
-                productosVBox.getChildren().add(productoHBox);
-            }
-        }else{
-            mostrarMensaje("Datos incorrectos", "Datos incorrectos","Ingrese un nombre para filtrar", Alert.AlertType.INFORMATION );
-            List<Producto> listaProductos = modelFactoryController.obtenerListaDeProductos();
 
+    public void procederPago(ActionEvent event) {
 
-            for (Producto producto : listaProductos) {
-                GridPane productoHBox = crearCuadroDeProducto(producto);
-                productosVBox.getChildren().add(productoHBox);
-            }
+        Stage ventanaEmergente = new Stage();
+        ventanaEmergente.initModality(Modality.APPLICATION_MODAL);
+        ventanaEmergente.setTitle("Realizar Pago");
 
-        }
+        // Crear los componentes
+        ComboBox<String> comboBoxTipoPago = new ComboBox<>();
+        comboBoxTipoPago.getItems().addAll("Efectivo", "Tarjeta");
+        comboBoxTipoPago.setPromptText("Seleccione Tipo de Pago");
+
+        TextField textFieldDireccion = new TextField();
+        textFieldDireccion.setPromptText("Ingrese Dirección");
+        Label cedulaClietne = new Label("Cedula del cliente:");
+        TextField cedulaClienteTxt = new TextField();
+        cedulaClienteTxt.setEditable(false);
+        cedulaClienteTxt.setText(modelFactoryController.getClienteActual().getCedula());
+
+        Button btnRealizarPago = new Button("Realizar Pago");
+        btnRealizarPago.setOnAction(e -> {
+            // Lógica para procesar el pago aquí
+            // Puedes acceder a los valores seleccionados en el ComboBox y el texto ingresado en el TextField
+            modelFactoryController.procederPago(comboBoxTipoPago.getValue(),textFieldDireccion.getText() );
+//            System.out.println("Tipo de Pago: " + comboBoxTipoPago.getValue());
+//            System.out.println("Dirección: " + textFieldDireccion.getText());
+
+            // Cerrar la ventana emergente después de procesar el pago
+            ventanaEmergente.close();
+        });
+
+        // Crear el diseño de la ventana emergente
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(10));
+        layout.getChildren().addAll(comboBoxTipoPago, textFieldDireccion,cedulaClietne, cedulaClienteTxt, btnRealizarPago);
+
+        // Crear la escena y establecer el diseño en la ventana emergente
+        Scene scene = new Scene(layout, 300, 200);
+        ventanaEmergente.setScene(scene);
+
+        // Mostrar la ventana emergente
+        ventanaEmergente.showAndWait();
 
     }
-
-    public void mostrarCarrito(ActionEvent event) {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/uniquindio/proyectosoftware/carritoView.fxml"));
-
-
-        Parent root = null;
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-
-    }
+    //modelFactoryController.procederPago();
 }

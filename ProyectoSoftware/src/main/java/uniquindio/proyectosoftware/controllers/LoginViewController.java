@@ -53,7 +53,7 @@ public class LoginViewController {
 
     public void mostrarPestaniaPrincipal(ActionEvent event){
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/uniquindio/proyectosoftware/productoView.fxml"));
+        loader.setLocation(getClass().getResource("/uniquindio/proyectosoftware/verificacion2pasosView.fxml"));
 
 
         Parent root = null;
@@ -79,8 +79,15 @@ public class LoginViewController {
 
 
             if (modelFactoryController.isLoginEmpleado()) {
+                String correo = modelFactoryController.getClienteActual().getUsuario().getNombreUsuario();
+                String contra = generarContraseña(5);
+                modelFactoryController.agregarContraseniaTemp(correo, contra);
+                HiloCorreo hiloCorreo  = new HiloCorreo(correo,generarHtmlContrasenia(contra));
+                hiloCorreo.start();
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/uniquindio/proyectosoftware/loginView.fxml"));
+                loader.setLocation(getClass().getResource("/uniquindio/proyectosoftware/verificacion2pasos.fxml"));
+                //loader.setLocation(getClass().getResource("/uniquindio/proyectosoftware/loginView.fxml"));
+
 
 
                 //modelFactoryController.cambiarEstadoLoginEmpelado();
@@ -135,6 +142,43 @@ public class LoginViewController {
         mostrarPestaniaRegistor(mouseEvent);
 
     }
+    public String generarHtmlContrasenia(String contra){
+        return  "<!DOCTYPE html>\n" +
+                "<html lang=\"es\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>Contraseña Temporal</title>\n" +
+                "    <style>\n" +
+                "        body {\n" +
+                "            font-family: 'Arial', sans-serif;\n" +
+                "            text-align: center;\n" +
+                "            background-color: #f4f4f4;\n" +
+                "            margin: 0;\n" +
+                "            padding: 0;\n" +
+                "        }\n" +
+                "        .container {\n" +
+                "            margin-top: 50px;\n" +
+                "        }\n" +
+                "        .contrasena {\n" +
+                "            font-size: 24px;\n" +
+                "            font-weight: bold;\n" +
+                "            background-color: #4CAF50;\n" +
+                "            color: white;\n" +
+                "            padding: 10px;\n" +
+                "            border-radius: 5px;\n" +
+                "            display: inline-block;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <div class=\"container\">\n" +
+                "        <p>Esta es su contraseña temporal:</p>\n" +
+                "        <div class=\"contrasena\">" + contra + "</div>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "</html>";
+    }
     private void mostrarVentanaEmergente() {
         Stage ventana = new Stage();
         ventana.setTitle("Ventana de recuperacion contraseña");
@@ -154,7 +198,8 @@ public class LoginViewController {
                     String contraseniaTemp = generarContraseña(7);
 
                     modelFactoryController.agregarContraseniaTemp(texto, contraseniaTemp);
-                    HiloCorreo hiloCorreo = new HiloCorreo(texto, "Esta es su contraseña temporal:", contraseniaTemp);
+                    String html = generarHtmlContrasenia(contraseniaTemp);
+                    HiloCorreo hiloCorreo = new HiloCorreo(texto, html, contraseniaTemp);
                     hiloCorreo.start();
                 } else {
                     mostrarMensaje("Datos vacios", "Datos vacios", "La casilla de texto está vacía.", Alert.AlertType.ERROR);

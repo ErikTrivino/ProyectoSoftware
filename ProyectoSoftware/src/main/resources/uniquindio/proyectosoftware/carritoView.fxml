@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniquindio.proyectosoftware.controllers.CarritoView">
+    <ScrollPane prefHeight="297.0" prefWidth="550.0" VBox.vgrow="ALWAYS">
+        <VBox fx:id="productosVBox" alignment="BASELINE_CENTER" spacing="10">
+            <!-- Los productos se agregarán aquí dinámicamente desde el controlador -->
+        </VBox>
+    </ScrollPane>
+    <Pane prefHeight="69.0" prefWidth="550.0">
+        <children>
+            <Button fx:id="btnSalir" alignment="BASELINE_LEFT" layoutX="14.0" layoutY="1.0" mnemonicParsing="false" onAction="#salir" prefHeight="25.0" prefWidth="51.0" style="-fx-background-color: #3b5998; -fx-text-fill: white;" text="Salir" />
+         <Text layoutX="126.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Valor total carrito: " />
+         <Text fx:id="txtValorCarrito" layoutX="228.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="77.336669921875" />
+         <Button layoutX="358.0" layoutY="2.0" mnemonicParsing="false" onAction="#procederPago" prefHeight="25.0" prefWidth="122.0" text="Proceder el pago" />
+         <Text fx:id="txtSubtotalProductos" layoutX="480.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="107.7366943359375" />
+
+        </children>
+    </Pane>
+
+</VBox>
