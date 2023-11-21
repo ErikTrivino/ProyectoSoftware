@@ -26,6 +26,7 @@ public class ModelFactoryController  {
     String accion;
 
     ArrayList<Producto> listaProductosCarrito = new ArrayList<>();
+    ArrayList<Producto> listaProductosFavoritos = new ArrayList<>();
 
 
     public Cliente getClienteActual() {
@@ -34,6 +35,14 @@ public class ModelFactoryController  {
 
     public void setClienteActual(Cliente clienteActual) {
         this.clienteActual = clienteActual;
+    }
+
+    public ArrayList<Producto> getListaProductosFavoritos() {
+        return listaProductosFavoritos;
+    }
+
+    public void setListaProductosFavoritos(ArrayList<Producto> listaProductosFavoritos) {
+        this.listaProductosFavoritos = listaProductosFavoritos;
     }
 
     public double generarValorProdcutosCarrito() {
@@ -95,6 +104,9 @@ public class ModelFactoryController  {
 
 
     }
+    public void procederPagoPrioducto(){
+
+    }
     public static String generarNIT() {
         // El formato de NIT puede variar, ajusta según sea necesario
         StringBuilder nit = new StringBuilder("1"); // Primer dígito puede variar según país
@@ -125,6 +137,138 @@ public class ModelFactoryController  {
             return false;
         }
 
+    }
+
+    public List<Producto> obtenerListaProductosFav() {
+        return listaProductosFavoritos;
+    }
+
+    public List<Pedido> obtenerListaPedidosCliente() {
+        return clienteActual.getPedidos();
+    }
+
+    public void crearPqrs(String tipoPQRS, String mensaje) {
+        Pqrs pqrs = new Pqrs(clienteActual,tipoPQRS, mensaje );
+        pasteleria.getListaPqrs().add(pqrs);
+    }
+
+    public List<Pedido> obtenerListaProductosClietes() {
+        return clienteActual.getPedidos();
+    }
+
+    public void crearDevolucionProducto(Producto producto) {
+        for (Pedido p:clienteActual.getPedidos()
+             ) {
+            int cont = 0;
+            int contF = 0;
+            for (DetallePedido detallePedido: p.getDetallePedido()
+                 ) {
+
+                if(detallePedido.getProducto().getNombre().equals(producto.getNombre())){
+
+                    contF = cont;
+                    //logica nose
+                }
+                cont++;
+            }
+            p.getDetallePedido().remove(contF);
+
+            int totalNuevo = 0;
+            for (DetallePedido detallePedido: p.getDetallePedido()
+            ) {
+                totalNuevo+= detallePedido.getProducto().getPrecio()*detallePedido.getCantidad();
+            }
+            p.setTotal(totalNuevo);
+
+        }
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("<title>Producto Quitado del Pedido</title>");
+        html.append("<style>");
+        html.append("body { font-family: Arial, sans-serif; }");
+        html.append("h1 { color: #FF5733; }");
+        html.append("ul { list-style-type: none; padding-left: 0; }");
+        html.append("li { margin-bottom: 10px; }");
+        html.append("</style>");
+        html.append("</head>");
+        html.append("<body>");
+
+        // Contenido principal
+        html.append("<div style='max-width: 600px; margin: 0 auto;'>");
+        html.append("<h1>");
+        html.append("Hola ");
+        html.append(clienteActual.getNombre());
+        html.append("</h1>");
+        html.append("<h1>¡Producto quitado del pedido!</h1>");
+        html.append("<p>El siguiente producto ha sido quitado de su pedido:</p>");
+
+        // Detalles del producto quitado
+        html.append("<ul>");
+        html.append("<li><strong>Nombre:</strong> ").append(producto.getNombre()).append("</li>");
+        html.append("<li><strong>Precio:</strong> ").append(producto.getPrecio()).append("</li>");
+        // Agregar más detalles si es necesario
+        html.append("</ul>");
+
+        html.append("</div>");
+        html.append("</body>");
+        html.append("</html>");
+        HiloCorreo hiloCorreo = new HiloCorreo(clienteActual.getUsuario().getNombreUsuario(), html.toString());
+        hiloCorreo.start();
+    }
+
+    public void generarCambio(Producto producto, Producto productoCambio) {
+        for (Pedido p : clienteActual.getPedidos()
+        ) {
+
+            for (DetallePedido detallePedido : p.getDetallePedido()
+            ) {
+
+                if (detallePedido.getProducto().getNombre().equals(productoCambio.getNombre())) {
+
+//                    System.out.println(producto.getNombre());
+//                    System.out.println(productoCambio.getNombre());
+                    detallePedido.setProducto(producto);
+                }
+
+            }
+
+
+        }
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>");
+        html.append("<html>");
+        html.append("<head>");
+        html.append("<title>Modificación del Pedido</title>");
+        html.append("</head>");
+        html.append("<body>");
+
+        // Mensaje de anuncio al usuario sobre la modificación del pedido
+        html.append("<h1>¡Su pedido ha sido modificado!</h1>");
+        html.append("<p>Se ha realizado un cambio en su pedido. Detalles a continuación:</p>");
+
+        // Detalles de los productos modificados
+        html.append("<p>Producto original:</p>");
+        html.append("<ul>");
+        html.append("<li><strong>Nombre:</strong> ").append(producto.getNombre()).append("</li>");
+        html.append("<li><strong>Precio:</strong> ").append(producto.getPrecio()).append("</li>");
+        // Agregar más detalles si es necesario
+        html.append("</ul>");
+
+        html.append("<p>Producto modificado:</p>");
+        html.append("<ul>");
+        html.append("<li><strong>Nombre:</strong> ").append(productoCambio.getNombre()).append("</li>");
+        html.append("<li><strong>Precio:</strong> ").append(productoCambio.getPrecio()).append("</li>");
+        // Agregar más detalles si es necesario
+        html.append("</ul>");
+
+        html.append("</body>");
+        html.append("</html>");
+        HiloCorreo hiloCorreo = new HiloCorreo(clienteActual.getUsuario().getNombreUsuario(), html.toString());
+        hiloCorreo.start();
+
+        mostrarMensaje("Confirmacion cambio", "Confirmacion cambio", "Se ha hecho el cambio de  su producto", Alert.AlertType.INFORMATION);
     }
 
     private static class SingletonHolder {
@@ -193,6 +337,7 @@ public class ModelFactoryController  {
         cliente1.setTelefono("111-111-1111");
         cliente1.setEmail("erikpablot@gmail.com");
         cliente1.setUsuario(new Usuario("erikpablot@gmail.com", "3333"));
+        clienteActual = cliente1;
 
 
         Cliente cliente2 = new Cliente();
@@ -216,6 +361,10 @@ public class ModelFactoryController  {
         productos.add(new Producto("6", "Pastel de Chocolate Grande", 25.99, "Galletas crujientes de chocolate", 20, "/uniquindio/proyectosoftware/image/imagen-prodcuto7.jpg"));
         productos.add(new Producto("7", "Pastel de Vainilla", 7.99, "Galletas crujientes de chocolate", 20, "/uniquindio/proyectosoftware/image/imagen-prodcuto5.jpg"));
         productos.add(new Producto("8", "Pastel de Coco", 7.99, "Galletas crujientes de chocolate", 20, "/uniquindio/proyectosoftware/image/imagen-prodcuto5.jpg"));
+        Pedido pedido = new Pedido("1231", "20/2508", 123.0, 0, empleado1, cliente1);
+        DetallePedido detallePedido = new DetallePedido("1", 1, productos.get(0));
+        pedido.getDetallePedido().add(detallePedido);
+        clienteActual.getPedidos().add(pedido);
         pasteleria.setListaProductos(productos);
 
 
@@ -250,12 +399,29 @@ public class ModelFactoryController  {
     public void agregarProductoCarrito(Producto producto){
         if(!listaProductosCarrito.contains(producto)){
             listaProductosCarrito.add(producto);
+            clienteActual.setCarrito(listaProductosCarrito);
         }else{
-            mostrarMensaje("Informacion", "Informacion", "El producto ya se encuentra en favoritos", Alert.AlertType.INFORMATION);
+            mostrarMensaje("Informacion", "Informacion", "El producto ya se encuentra en carrito", Alert.AlertType.INFORMATION);
         }
     }
     public void eliminarProductoCarrito(Producto producto){
         listaProductosCarrito.remove(producto);
+        clienteActual.setCarrito(listaProductosCarrito);
+    }
+    public boolean agregarProductoFav(Producto producto){
+        if(!listaProductosFavoritos.contains(producto)){
+            listaProductosFavoritos.add(producto);
+            clienteActual.setFavoritos(listaProductosFavoritos);
+            return true;
+        }else{
+            mostrarMensaje("Informacion", "Informacion", "El producto ya se encuentra en favoritos", Alert.AlertType.INFORMATION);
+            return false;
+        }
+    }
+    public void eliminarProductoFav(Producto producto){
+        listaProductosFavoritos.remove(producto);
+
+        clienteActual.setFavoritos(listaProductosFavoritos);
     }
 
 
@@ -281,10 +447,12 @@ public class ModelFactoryController  {
         if(cliente.isPresent()){
             if(cliente.get().getUsuario().getContrasenia().equals(contrasenia)){
                 clienteActual = cliente.get();
+                listaProductosCarrito = clienteActual.getCarrito();
                 empleadoLogin = true;
             }else{
                 if(cliente.get().getUsuario().getContraseniaTemp().equals(contrasenia)){
                     clienteActual = cliente.get();
+                    listaProductosCarrito = clienteActual.getCarrito();
                     empleadoLogin = true;
                     cliente.get().getUsuario().setContraseniaTemp("");                }
             }
@@ -303,6 +471,11 @@ public class ModelFactoryController  {
     public void mandarCorreoNotificacionCliente(String cedulaCliente, String direccion, Producto producto, String tipoPago) {
         Cliente cliente = pasteleria.getListaClientes().stream().filter(x-> x.getCedula().equals(cedulaCliente)).findFirst().get();
 
+        Pedido pedido= new Pedido(generarNIT(), String.valueOf(LocalDate.now()), producto.getPrecio(), 0, pasteleria.getAdmin(), clienteActual);
+        DetallePedido detallePedido = new DetallePedido(producto.getId(), 1, producto);
+        pedido.getDetallePedido().add(detallePedido);
+        pasteleria.getListaPedidos().add(pedido);
+        clienteActual.getPedidos().add(pedido);
         String contenido = "<html>" +
                 "<head>" +
                 "<style>" +
